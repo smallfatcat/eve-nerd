@@ -91,6 +91,7 @@ function input_character_name_click(){
 
 function get_kill_details(killmail_id){
 	get_data_kill(killmail_id);
+	get_items(killmail_id);
 }
 
 function get_data_character_name(character_name){
@@ -169,6 +170,26 @@ if (window.XMLHttpRequest) {
 	xmlhttp.send();
 }
 
+function get_items(killmail_id){
+console.log('killitems');
+if (window.XMLHttpRequest) {
+  // code for modern browsers
+  xmlhttp = new XMLHttpRequest();
+	} else {
+  // code for old IE browsers
+  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+}
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+	    var search_data = JSON.parse(this.responseText);
+	    draw_table_kill_items(search_data)
+	    return search_data;
+		}
+	};
+	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/getItems.php?killmail_id="+killmail_id, true);
+	xmlhttp.send();
+}
+
 function draw_table_result(result_array){
 	$('#table_result').empty();
 	$('#table_result').append(generate_html_table(result_array));
@@ -177,6 +198,11 @@ function draw_table_result(result_array){
 function draw_table_kill_detail(result_array){
 	$('#table_kill_detail').empty();
 	$('#table_kill_detail').append(generate_html_table(result_array));
+}
+
+function draw_table_kill_items(result_array){
+	$('#table_kill_items').empty();
+	$('#table_kill_items').append(generate_html_table(result_array));
 }
 
 function generate_html_table(result_array){
