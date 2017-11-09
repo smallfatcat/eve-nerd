@@ -25,17 +25,17 @@
 <p class="s2">Coming soon...</p>
 <div id="searchbox_solar_system" class="ui-widget">
 	<label for="input_solar_system">Solar System: </label>
-	<input id="input_solar_system">
+	<input id="input_solar_system" onkeypress="handle_solar_system_keypress(event)">
 	<button class="ui-button ui-widget" onclick="input_solar_system_click()">Search</button>
 </div>
 <div id="searchbox_ship_type" class="ui-widget">
 	<label for="input_ship_type">Ship Type: </label>
-	<input id="input_ship_type">
+	<input id="input_ship_type" onkeypress="handle_ship_type_keypress(event)">
 	<button class="ui-button ui-widget" onclick="input_ship_type_click()">Search</button>
 </div>
 <div id="searchbox_character_name" class="ui-widget">
 	<label for="input_character_name">Character name: </label>
-	<input id="input_character_name">
+	<input id="input_character_name" onkeypress="handle_character_name_keypress(event)">
 	<button class="ui-button ui-widget" onclick="input_character_name_click()">Search</button>
 </div>
 <div id="table_result" class="left">

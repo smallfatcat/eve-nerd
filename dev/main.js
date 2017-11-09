@@ -89,6 +89,27 @@ function input_character_name_click(){
 	//console.log(character_id);
 }
 
+function handle_character_name_keypress(event){
+	var key=event.keyCode || event.which;
+	if (key==13){
+    input_character_name_click();
+	}
+}
+
+function handle_ship_type_keypress(event){
+	var key=event.keyCode || event.which;
+	if (key==13){
+    input_ship_type_click();
+	}
+}
+
+function handle_solar_system_keypress(event){
+	var key=event.keyCode || event.which;
+	if (key==13){
+    input_solar_system_click();
+	}
+}
+
 function get_kill_details(killmail_id){
 	get_data_kill(killmail_id);
 	get_items(killmail_id);
@@ -152,13 +173,13 @@ if (window.XMLHttpRequest) {
 }
 
 function get_data_kill(killmail_id){
-if (window.XMLHttpRequest) {
-  // code for modern browsers
-  xmlhttp = new XMLHttpRequest();
-	} else {
-  // code for old IE browsers
-  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-}
+	if (window.XMLHttpRequest) {
+	  // code for modern browsers
+	  xmlhttp = new XMLHttpRequest();
+		} else {
+	  // code for old IE browsers
+	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 	    var search_data = JSON.parse(this.responseText);
@@ -171,14 +192,14 @@ if (window.XMLHttpRequest) {
 }
 
 function get_items(killmail_id){
-console.log('killitems');
-if (window.XMLHttpRequest) {
-  // code for modern browsers
-  xmlhttp = new XMLHttpRequest();
-	} else {
-  // code for old IE browsers
-  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-}
+
+	if (window.XMLHttpRequest) {
+	  // code for modern browsers
+	  xmlhttp = new XMLHttpRequest();
+		} else {
+	  // code for old IE browsers
+	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 	    var search_data = JSON.parse(this.responseText);
