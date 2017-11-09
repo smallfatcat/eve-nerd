@@ -1,5 +1,13 @@
+// eve-nerd.com
+// Demo code
+// Authors: SmallFatCat, Kenkyuu
+// GitHub Repo: https://github.com/smallfatcat/eve-nerd
+// Date: 9th November 2017
+// Licence: MIT
+
+
 var list_solar_systems = make_autocomplete_list(solarSystems);
-var list_ship_types = make_autocomplete_list(ship_types);;
+var list_ship_types = make_autocomplete_list(ship_types);
 
 // Document Ready
 $( function() {
@@ -73,8 +81,35 @@ function input_ship_type_click(){
 	console.log(ship_id);
 }
 
+function input_character_name_click(){
+	var character_name = $('#input_character_name').val();
+	//var character_id = nameToID(ship_name, ship_types);
+	get_data_character_name(character_name);
+	console.log(character_name);
+	//console.log(character_id);
+}
+
 function get_kill_details(killmail_id){
 	get_data_kill(killmail_id);
+}
+
+function get_data_character_name(character_name){
+if (window.XMLHttpRequest) {
+  // code for modern browsers
+  xmlhttp = new XMLHttpRequest();
+	} else {
+  // code for old IE browsers
+  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+	    var search_data = JSON.parse(this.responseText);
+	    draw_table_result(search_data)
+	    return search_data;
+		}
+	};
+	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/searchKills_character_name.php?character_name="+character_name, true);
+	xmlhttp.send();
 }
 
 function get_data_solar_system(solar_system_id){
