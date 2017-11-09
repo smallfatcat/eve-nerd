@@ -1,106 +1,62 @@
+var list_solar_systems = make_autocomplete_list(solarSystems);
+var list_ship_types = make_autocomplete_list(ship_types);;
+
+// Document Ready
+$( function() {
+  attach_autocomplete('#input_solar_system', list_solar_systems);
+  attach_autocomplete('#input_ship_type', list_ship_types);
+} );
+
+function make_autocomplete_list(bigvar){
+	var list = [];
+	bigvar.forEach(function(bigVarObject){
+		list.push(bigVarObject.N);
+	});
+	return list;
+}
+
+function nameToID(name, list){
+	var id = 0;
+	for(var i=0;i<list.length;i++){
+		if(list[i].N.toLowerCase()==name.toLowerCase()){
+			id = list[i].I;
+			break;
+		}
+	}
+	return id;
+}
+
+function attach_autocomplete(id, list){
+	$( id ).autocomplete({
+    source: function( request, response ) {
+        var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+        response( $.grep( list, function( item ){
+          if(request.term.length>1){
+            return matcher.test( item );
+          }
+        }) );
+    }
+  });
+}
+
 function input_solar_system_click(){
-	get_data_solar_system(SSnameToID($('#input_solar_system').val()));
-	console.log($('#input_solar_system').val());
-	console.log(SSnameToID($('#input_solar_system').val()));
+	var solar_system_name = $('#input_solar_system').val();
+	var solar_system_id = nameToID(solar_system_name, solarSystems)
+	get_data_solar_system(solar_system_id);
+	console.log(solar_system_name);
+	console.log(solar_system_id);
 }
 
 function input_ship_type_click(){
-	get_data_ship_type(STnameToID($('#input_ship_type').val()));
-	console.log($('#input_ship_type').val());
-	console.log(STnameToID($('#input_ship_type').val()));
+	var ship_name = $('#input_ship_type').val();
+	var ship_id = nameToID(ship_name, ship_types);
+	get_data_ship_type(ship_id);
+	console.log(ship_name);
+	console.log(ship_id);
 }
 
 function get_kill_details(killmail_id){
 	get_data_kill(killmail_id);
-}
-
-var list_solar_systems = [];
-solarSystems.forEach(function(ssObj){
-	list_solar_systems.push(ssObj.N);
-});
-var list_ship_type = [];
-ship_type.forEach(function(stObj){
-	list_ship_type.push(stObj.N);
-});
-
-function SSnameToID(solar_system_name){
-	var solar_system_id = 0;
-	for(var i=0;i<solarSystems.length;i++){
-		if(solarSystems[i].N.toLowerCase()==solar_system_name.toLowerCase()){
-			solar_system_id = solarSystems[i].I;
-			break;
-		}
-	}
-	return solar_system_id;
-}
-
-function STnameToID(ship_type_name){
-	var ship_type_id = 0;
-	for(var i=0;i<ship_type.length;i++){
-		if(ship_type[i].N.toLowerCase()==ship_type_name.toLowerCase()){
-			solar_system_id = ship_type[i].I;
-			break;
-		}
-	}
-	return solar_system_id;
-}
-
-$( function() {
-  $( "#input_solar_system" ).autocomplete({
-    source: function( request, response ) {
-        var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
-        response( $.grep( list_solar_systems, function( item ){
-          if(request.term.length>1){
-            return matcher.test( item );
-          }
-        }) );
-    }
-  });
-  $( "#input_ship_type" ).autocomplete({
-    source: function( request, response ) {
-        var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
-        response( $.grep( list_ship_type, function( item ){
-          if(request.term.length>1){
-            return matcher.test( item );
-          }
-        }) );
-    }
-  });
-} );
-
-function generate_html_table(result_array){
-	var table_string = '';
-	table_string += '<table>';
-	table_string += '<tr>';
-	var header_row = result_array.shift();
-	header_row.forEach(function(element){
-		table_string += '<th>';
-		table_string += element;
-		table_string += '</th>';
-	});
-	table_string += '</tr>';
-	result_array.forEach(function(data_rows){
-  	table_string += '<tr>';
-  	var killmail_id = data_rows[0];
-  	data_rows.forEach(function(element){
-	  	table_string += '<td>';
-	  	table_string += '<a onclick="get_kill_details('+ killmail_id +')">' + element + '</a>';
-	  	table_string += '</td>';
-  	});
-  	table_string += '</tr>';
-	});
-	table_string += '</table>';
-	return table_string;
-}
-
-function draw_table_result(result_array){
-	$('#table_result').empty();
-	$('#table_result').append(generate_html_table(result_array));
-}
-
-function draw_table_kill_detail(result_array){
-	$('#table_kill_detail').empty();
-	$('#table_kill_detail').append(generate_html_table(result_array));
 }
 
 function get_data_solar_system(solar_system_id){
@@ -137,7 +93,7 @@ if (window.XMLHttpRequest) {
 	    return search_data;
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/searchKills_ship_type.php?ship_type_id="+solar_system_id, true);
+	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/searchKills_ship_type.php?ship_type_id="+ship_type_id, true);
 	xmlhttp.send();
 }
 
@@ -158,4 +114,39 @@ if (window.XMLHttpRequest) {
 	};
 	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/getKillDetails.php?killmail_id="+killmail_id, true);
 	xmlhttp.send();
+}
+
+function draw_table_result(result_array){
+	$('#table_result').empty();
+	$('#table_result').append(generate_html_table(result_array));
+}
+
+function draw_table_kill_detail(result_array){
+	$('#table_kill_detail').empty();
+	$('#table_kill_detail').append(generate_html_table(result_array));
+}
+
+function generate_html_table(result_array){
+	var table_string = '';
+	table_string += '<table>';
+	table_string += '<tr>';
+	var header_row = result_array.shift();
+	header_row.forEach(function(element){
+		table_string += '<th>';
+		table_string += element;
+		table_string += '</th>';
+	});
+	table_string += '</tr>';
+	result_array.forEach(function(data_rows){
+  	table_string += '<tr>';
+  	var killmail_id = data_rows[0];
+  	data_rows.forEach(function(element){
+	  	table_string += '<td>';
+	  	table_string += '<a onclick="get_kill_details('+ killmail_id +')">' + element + '</a>';
+	  	table_string += '</td>';
+  	});
+  	table_string += '</tr>';
+	});
+	table_string += '</table>';
+	return table_string;
 }
