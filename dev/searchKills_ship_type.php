@@ -11,7 +11,7 @@
 		  die('Connection failed: ' . $e->getMessage());
 		}
 
-		$ksql = $conn->prepare("SELECT killmail_id, typeName, character_name, killmail_time FROM nerdDB.killmails JOIN eve_sde.invTypes ON nerdDB.killmails.ship_type_id = eve_sde.invTypes.typeID JOIN nerdDB.characters ON nerdDB.killmails.character_id = nerdDB.characters.character_id WHERE ship_type_id = ?");
+		$ksql = $conn->prepare("SELECT killmail_id, typeName, character_name, killmail_time FROM nerdDB.killmails JOIN eve_sde.invTypes ON nerdDB.killmails.ship_type_id = eve_sde.invTypes.typeID JOIN nerdDB.characters ON nerdDB.killmails.character_id = nerdDB.characters.character_id WHERE ship_type_id = ? ORDER BY killmail_id DESC");
 		$res = $ksql -> execute(array($ship_type_id));
 
 		//$arr = $ksql->fetchAll();
