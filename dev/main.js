@@ -5,6 +5,24 @@ var list_ship_types = make_autocomplete_list(ship_types);;
 $( function() {
   attach_autocomplete('#input_solar_system', list_solar_systems);
   attach_autocomplete('#input_ship_type', list_ship_types);
+
+  //JSON autocomplete
+  var cache = {};
+    $( "#input_character_name" ).autocomplete({
+      minLength: 3,
+      source: function( request, response ) {
+        var term = request.term;
+        if ( term in cache ) {
+          response( cache[ term ] );
+          return;
+        }
+ 
+        $.getJSON( "searchCharacterName.php", request, function( data, status, xhr ) {
+          cache[ term ] = data;
+          response( data );
+        });
+      }
+    });
 } );
 
 function make_autocomplete_list(bigvar){
