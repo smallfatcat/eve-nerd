@@ -5,33 +5,71 @@
 // Date: 9th November 2017
 // Licence: MIT
 
+var region_id = 10000001;
 
-var list_solar_systems = make_autocomplete_list(solarSystems);
-var list_ship_types = make_autocomplete_list(ship_types);
+var g_map_data = new Array();
+var g_highlight_solar_system = 0;
 
 // Document Ready
 $( function() {
-  attach_autocomplete('#input_solar_system', list_solar_systems);
-  attach_autocomplete('#input_ship_type', list_ship_types);
-
-  //JSON autocomplete
-  var cache = {};
-    $( "#input_character_name" ).autocomplete({
-      minLength: 3,
-      source: function( request, response ) {
-        var term = request.term;
-        if ( term in cache ) {
-          response( cache[ term ] );
-          return;
-        }
- 
-        $.getJSON( "searchCharacterName.php", request, function( data, status, xhr ) {
-          cache[ term ] = data;
-          response( data );
-        });
-      }
-    });
+	get_map_data(region_id);
 } );
+
+function save_map_data(map_data){
+	g_map_data = map_data;
+	draw_table_result(g_map_data);
+	draw_map(g_map_data);
+}
+
+function draw_map(map_data){
+	
+
+	var canvas = document.getElementById("map_canvas");
+  var ctx = canvas.getContext("2d");
+
+  ctx.font="12px Cuprum";
+  
+  // Clear
+  ctx.fillStyle='rgb(255,255,255)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //var headings = map_data.shift();
+  map_data.forEach(function(solar_systems){
+  	var scale_factor = 1/10e16*500; 
+  	var x = solar_systems[6]*scale_factor+600;
+  	var y = solar_systems[7]*scale_factor+600;
+  	var z = solar_systems[8]*scale_factor+600;
+  	var name = solar_systems[1]
+  	console.log('solar_system_name: ' + name + ' x: ' + x + ' y: ' + y + ' z: ' + z);
+  	if(g_highlight_solar_system == solar_systems[0]){
+  		ctx.fillStyle = 'rgb(255, 64, 64)';
+  	}else{
+  		ctx.fillStyle = 'rgb(64, 255, 64)';
+  	}
+  	ctx.fillRect(x, z, 5, 5);
+  	ctx.fillStyle='rgb(0, 0, 0)';
+  	ctx.fillText(name, x - ctx.measureText(name).width/2, z);
+  });
+ 
+
+}
+
+function get_map_data(region_id){
+if (window.XMLHttpRequest) {
+  // code for modern browsers
+  xmlhttp = new XMLHttpRequest();
+	} else {
+  // code for old IE browsers
+  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+	    var map_data = JSON.parse(this.responseText);
+	    save_map_data(map_data);
+		}
+	};
+	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/getMapData.php?region_id="+region_id, true);
+	xmlhttp.send();
+}
 
 function make_autocomplete_list(bigvar){
 	var list = [];
@@ -113,6 +151,12 @@ function handle_solar_system_keypress(event){
 function get_kill_details(killmail_id){
 	get_data_kill(killmail_id);
 	get_items(killmail_id);
+}
+
+function highlight_solar_system(solar_system_id){
+	console.log(solar_system_id);
+	g_highlight_solar_system = solar_system_id;
+	draw_map(g_map_data);
 }
 
 function get_data_character_name(character_name){
@@ -239,10 +283,10 @@ function generate_html_table(result_array){
 	table_string += '</tr>';
 	result_array.forEach(function(data_rows){
   	table_string += '<tr>';
-  	var killmail_id = data_rows[0];
+  	var solar_system_id = data_rows[0];
   	data_rows.forEach(function(element){
 	  	table_string += '<td>';
-	  	table_string += '<a onclick="get_kill_details('+ killmail_id +')">' + element + '</a>';
+	  	table_string += '<a onclick="highlight_solar_system('+ solar_system_id +')">' + element + '</a>';
 	  	table_string += '</td>';
   	});
   	table_string += '</tr>';
