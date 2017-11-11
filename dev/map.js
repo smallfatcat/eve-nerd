@@ -5,7 +5,7 @@
 // Date: 9th November 2017
 // Licence: MIT
 
-var region_id = 10000001;
+var region_id = 10000002;
 
 var g_map_data = {};
 var g_raw_map_data = [];
@@ -14,6 +14,7 @@ var g_highlight_solar_system = 0;
 var g_highlight_index = 0;
 var canvas;
 var ctx;
+var g_move_ss = false;
 
 
 // Document Ready
@@ -23,10 +24,21 @@ $( function() {
 	canvas = document.getElementById("map_canvas");
 	ctx = canvas.getContext("2d");
 
-	ctx.canvas.addEventListener('click', function(event){
-  	update_map_data(event.clientX-ctx.canvas.offsetLeft, event.clientY-ctx.canvas.offsetTop);
-  });
+	ctx.canvas.addEventListener('click', process_canvas_click);
+	ctx.canvas.addEventListener('mousemove', process_mousemove);
 } );
+
+function process_canvas_click(event){
+	update_map_data(event.clientX-ctx.canvas.offsetLeft, event.clientY-ctx.canvas.offsetTop);
+	g_move_ss = !g_move_ss;
+}
+
+function process_mousemove(event){
+	if(g_move_ss){
+		update_map_data(event.clientX-ctx.canvas.offsetLeft, event.clientY-ctx.canvas.offsetTop);
+	}
+	//console.log((event.clientX-ctx.canvas.offsetLeft)+':'+(event.clientY-ctx.canvas.offsetTop));
+}
 
 function update_map_data(x,y){
 	g_map_data[g_highlight_solar_system].x_view = x;
@@ -37,8 +49,8 @@ function update_map_data(x,y){
 }
 
 function save_map_data(raw_map_data){
+	raw_map_data = scale_xy(raw_map_data);
 	process_raw_map_data(raw_map_data);
-	scale_xy();
 	draw_map(g_map_data);
 	draw_table_result(g_map_data);
 }
@@ -141,8 +153,8 @@ function draw_map(map_data){
   		ctx.fillStyle = 'rgb(64, 255, 64)';
   	}
   	ctx.fillRect(x, y, 5, 5);
-  	ctx.fillStyle='rgb(0, 0, 0)';
-  	ctx.fillText(name, x - ctx.measureText(name).width/2, y);
+  	/*ctx.fillStyle='rgb(0, 0, 0)';
+  	ctx.fillText(name, x - ctx.measureText(name).width/2, y);*/
   });
   jump_view_array.forEach(function(jump){
   	ctx.beginPath();
@@ -154,14 +166,32 @@ function draw_map(map_data){
   //map_data.unshift(headings);
 }
 
-function scale_xy(){
-	var scale_factor = 1/10e16*500;
-	for(ss in g_map_data){
-		var x = Math.round(g_map_data[ss].x*scale_factor+600);
-		var z = Math.round(g_map_data[ss].z*scale_factor+600);
-		g_map_data[ss].x_view = x;
-		g_map_data[ss].y_view = z;
-	}
+function scale_xy(raw_map_data){
+	var width = 400;
+	var height = 400;
+	var indent = 50;
+	var min_x = Infinity;
+	var min_y = Infinity;
+	var max_x = -Infinity;
+	var max_y = -Infinity;
+	raw_map_data.forEach(function(ss){
+		var x = parseFloat(ss[6]);
+		var y = parseFloat(-ss[8]);
+		min_x = Math.min(min_x, x);
+		min_y = Math.min(min_y, y);
+		max_x = Math.max(max_x, x);
+		max_y = Math.max(max_y, y);
+	});
+	var scale_x = width/(max_x - min_x);
+	var scale_y = height/(max_y - min_y);
+	var min_scale = Math.min(scale_x, scale_y);
+	raw_map_data.forEach(function(ss){
+		var x = parseFloat(ss[6]);
+		var y = parseFloat(-ss[8]);
+		ss[9] = (x - min_x)*min_scale+indent;
+		ss[10] = (y - min_y)*min_scale+indent;
+	});
+	return raw_map_data;
 }
 
 function get_map_data(region_id){

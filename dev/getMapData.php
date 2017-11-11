@@ -11,7 +11,8 @@
 		  die('Connection failed: ' . $e->getMessage());
 		}
 
-		$ksql = $conn->prepare("SELECT solar_system_id, solar_system_name, constellation_id, constellation_name, region_id, region_name, x, y, z, render_x, render_y FROM nerdDB.map WHERE map.region_id = ?");
+		// $ksql = $conn->prepare("SELECT solar_system_id, solar_system_name, constellation_id, constellation_name, region_id, region_name, x, y, z, render_x, render_y FROM nerdDB.map WHERE map.region_id = ?");
+		$ksql = $conn->prepare("SELECT solar_system_id, solar_system_name, constellation_id, constellation_name, region_id, region_name, x, y, z, render_x, render_y FROM nerdDB.map WHERE solar_system_id < 31000001");
 		$lsql = $conn->prepare("SELECT toSolarSystemID FROM eve_sde.mapSolarSystemJumps WHERE fromSolarSystemID = ?");
 		$res = $ksql -> execute(array($region_id));
 
