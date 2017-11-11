@@ -92,6 +92,24 @@ function make_ss_view_array(map_data){
 	return ss_view_array;
 }
 
+function make_jump_view_array(jump_data_array, map_data){
+	var jump_view_array = [];
+	jump_data_array.forEach(function(jump){
+		var from = parseInt(jump.from,10);
+		var to = parseInt(jump.to,10);
+		if(map_data[to]!=undefined){
+			var jump_view = {
+				'x1': map_data[from].x_view, 
+				'x2': map_data[to].x_view, 
+				'y1': map_data[from].y_view, 
+				'y2': map_data[to].y_view
+			};
+			jump_view_array.push(jump_view);
+		}
+	});
+	return jump_view_array;
+}
+
 /*function set_highlight_index(){
 	var highlight_index = 0;
 	for(var i=1;i<g_map_data.length;i++){
@@ -105,6 +123,7 @@ function make_ss_view_array(map_data){
 
 function draw_map(map_data){
   var ss_view_array = make_ss_view_array(g_map_data);
+  var jump_view_array = make_jump_view_array(g_jump_data_array, g_map_data);
   ctx.font="12px Cuprum";
   
   // Clear
@@ -124,6 +143,13 @@ function draw_map(map_data){
   	ctx.fillRect(x, y, 5, 5);
   	ctx.fillStyle='rgb(0, 0, 0)';
   	ctx.fillText(name, x - ctx.measureText(name).width/2, y);
+  });
+  jump_view_array.forEach(function(jump){
+  	ctx.beginPath();
+  	ctx.moveTo(jump.x1, jump.y1);
+  	ctx.lineTo(jump.x2, jump.y2);
+  	ctx.strokeStyle='rgb(128, 180, 128)';
+  	ctx.stroke();
   });
   //map_data.unshift(headings);
 }
