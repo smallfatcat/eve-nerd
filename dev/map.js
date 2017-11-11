@@ -5,7 +5,7 @@
 // Date: 9th November 2017
 // Licence: MIT
 
-var region_id = 10000002;
+var region_id = 10000010;
 
 var g_map_data = {};
 var g_raw_map_data = [];
@@ -153,8 +153,8 @@ function draw_map(map_data){
   		ctx.fillStyle = 'rgb(64, 255, 64)';
   	}
   	ctx.fillRect(x, y, 5, 5);
-  	/*ctx.fillStyle='rgb(0, 0, 0)';
-  	ctx.fillText(name, x - ctx.measureText(name).width/2, y);*/
+  	ctx.fillStyle='rgb(0, 0, 0)';
+  	ctx.fillText(name, x - ctx.measureText(name).width/2, y);
   });
   jump_view_array.forEach(function(jump){
   	ctx.beginPath();
@@ -188,8 +188,8 @@ function scale_xy(raw_map_data){
 	raw_map_data.forEach(function(ss){
 		var x = parseFloat(ss[6]);
 		var y = parseFloat(-ss[8]);
-		ss[9] = (x - min_x)*min_scale+indent;
-		ss[10] = (y - min_y)*min_scale+indent;
+		ss[9] = Math.round((x - min_x)*min_scale+indent);
+		ss[10] = Math.round((y - min_y)*min_scale+indent);
 	});
 	return raw_map_data;
 }
