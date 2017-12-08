@@ -8,6 +8,7 @@
 
 var list_solar_systems = make_autocomplete_list(solarSystems);
 var list_ship_types = make_autocomplete_list(ship_types);
+var g_user_name = '';
 
 // Document Ready
 $( function() {
@@ -31,7 +32,47 @@ $( function() {
         });
       }
     });
+  // read cookies for user_id
+  // check_cookie();
 } );
+
+function set_cookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function get_cookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function check_cookie() {
+    var user_id = get_cookie("user_id");
+    var user_key = get_cookie("user_key");
+    if (user_id != "") {
+        console.log("user_id: " + user_id);
+        console.log("user_key: " + user_key);
+    } else {
+        user_id = prompt("Please enter your user_id:", "");
+        if (user_id != "" && user_id != null) {
+            set_cookie("user_id", user_id, 365);
+            set_cookie("user_key", Math.random(), 365);
+        }
+    }
+}
+
 
 function make_autocomplete_list(bigvar){
 	var list = [];
@@ -116,12 +157,12 @@ function get_kill_details(killmail_id){
 }
 
 function get_data_character_name(character_name){
-if (window.XMLHttpRequest) {
-  // code for modern browsers
-  xmlhttp = new XMLHttpRequest();
+	if (window.XMLHttpRequest) {
+	  // code for modern browsers
+	  xmlhttp = new XMLHttpRequest();
 	} else {
-  // code for old IE browsers
-  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	  // code for old IE browsers
+	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -135,12 +176,12 @@ if (window.XMLHttpRequest) {
 }
 
 function get_data_solar_system(solar_system_id){
-if (window.XMLHttpRequest) {
-  // code for modern browsers
-  xmlhttp = new XMLHttpRequest();
+	if (window.XMLHttpRequest) {
+	  // code for modern browsers
+	  xmlhttp = new XMLHttpRequest();
 	} else {
-  // code for old IE browsers
-  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	  // code for old IE browsers
+	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -154,12 +195,12 @@ if (window.XMLHttpRequest) {
 }
 
 function get_data_ship_type(ship_type_id){
-if (window.XMLHttpRequest) {
-  // code for modern browsers
-  xmlhttp = new XMLHttpRequest();
+	if (window.XMLHttpRequest) {
+	  // code for modern browsers
+	  xmlhttp = new XMLHttpRequest();
 	} else {
-  // code for old IE browsers
-  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	  // code for old IE browsers
+	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -176,7 +217,7 @@ function get_data_kill(killmail_id){
 	if (window.XMLHttpRequest) {
 	  // code for modern browsers
 	  xmlhttp = new XMLHttpRequest();
-		} else {
+	} else {
 	  // code for old IE browsers
 	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
@@ -196,7 +237,7 @@ function get_items(killmail_id){
 	if (window.XMLHttpRequest) {
 	  // code for modern browsers
 	  xmlhttp = new XMLHttpRequest();
-		} else {
+	} else {
 	  // code for old IE browsers
 	  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
