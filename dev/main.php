@@ -1,28 +1,6 @@
 <?php
 	session_start();
 	include 'db_auth.php';
-	$GLOBALS['servername'] = $servername;
-	$GLOBALS['dbname'] = $dbname;
-	$GLOBALS['username'] = $username;
-	$GLOBALS['password'] = $password;
-
-	function save_auth_code($auth_code, $state){
-		try {
-		  $conn = new PDO( "mysql:" . "host=".$GLOBALS['servername'].";" . "dbname=".$GLOBALS['dbname'], $GLOBALS['username'], $GLOBALS['password']);
-		} catch (PDOException $e) {
-		  die('Connection failed: ' . $e->getMessage());
-		}
-		//UPDATE login SET auth_code = 'xxx' WHERE login_name = 'sfc' AND state = 'state123';
-		$csql = $conn->prepare("UPDATE nerdDB.login SET auth_code = ? WHERE login_name = ? AND state = ?");
-		$res = $csql -> execute(array($auth_code, $_SESSION["login_name"], $state));
-	}
-	
-	// handle eve SSO callback
-	if(isset($_GET["code"])&&$_SESSION["logged_in"]){
-		save_auth_code($_GET["code"],$_GET["state"]);
-		header("Location:main.php");
-  	exit();
-	}
 
 	// handle login form
 	if(isset($_POST["login"])){
@@ -36,13 +14,14 @@
 		}
 
 		//$csql = $conn->prepare("SELECT login_name FROM login WHERE login_name = '". $login_name . "' AND login_pass = '". $login_pass ."'");
-		$csql = $conn->prepare("SELECT login_name FROM login WHERE login_name = ? AND login_pass = ?");
+		$csql = $conn->prepare("SELECT login_name, state FROM login WHERE login_name = ? AND login_pass = ?");
 		$res = $csql -> execute(array($login_name, $login_pass));
 
 		// if rowcount greater than 0 then username and password matched
 		if($csql->rowCount() > 0){
 			$row = $csql->fetch(PDO::FETCH_ASSOC);
 			$_SESSION["login_name"] = $row['login_name'];
+			$_SESSION["state"] = $row['state'];
 			$_SESSION["logged_in"] = true;
 		}
 		// empty result means no match found
@@ -105,7 +84,7 @@
 		echo '<input type="hidden" name="logout" value="1">';
 		echo '<input type="submit" value="Logout">';
 		echo '</form>';
-		$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fwww.eve-nerd.com%2Fdev%2Fmain.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=characterContactsRead%20characterContactsWrite&state=uniquestate123';
+		$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fwww.eve-nerd.com%2Fdev%2Fauth.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=esi-location.read_location.v1%20esi-location.read_ship_type.v1%20esi-location.read_online.v1&state='.$_SESSION["state"];
 		echo '<a href="'.$sso_link.'"><img src="./EVE_SSO_Login_Buttons_Small_Black.png"></a>';
 		//https://www.eve-nerd.com/dev/main.php?code=F4UPlvIKQ3sczvesm9nOAOCVJqwPWxbV5pG-5o6P-b_sChG__GqHY6tI4L9GZXcM0&state=uniquestate123
 	}
