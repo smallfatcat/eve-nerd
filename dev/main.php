@@ -84,9 +84,11 @@
 		echo '<input type="hidden" name="logout" value="1">';
 		echo '<input type="submit" value="Logout">';
 		echo '</form>';
-		$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fwww.eve-nerd.com%2Fdev%2Fauth.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=esi-location.read_location.v1%20esi-location.read_ship_type.v1%20esi-location.read_online.v1&state='.$_SESSION["state"];
-		echo '<a href="'.$sso_link.'"><img src="./EVE_SSO_Login_Buttons_Small_Black.png"></a>';
-		//https://www.eve-nerd.com/dev/main.php?code=F4UPlvIKQ3sczvesm9nOAOCVJqwPWxbV5pG-5o6P-b_sChG__GqHY6tI4L9GZXcM0&state=uniquestate123
+		if(!$_SESSION["auth_status"]){
+			$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fwww.eve-nerd.com%2Fdev%2Fauth.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=esi-location.read_location.v1%20esi-location.read_ship_type.v1%20esi-location.read_online.v1&state='.$_SESSION["state"];
+			echo '<a href="'.$sso_link.'"><img src="./EVE_SSO_Login_Buttons_Small_Black.png"></a>';
+			//https://www.eve-nerd.com/dev/main.php?code=F4UPlvIKQ3sczvesm9nOAOCVJqwPWxbV5pG-5o6P-b_sChG__GqHY6tI4L9GZXcM0&state=uniquestate123
+		}
 	}
 ?>
 </div>

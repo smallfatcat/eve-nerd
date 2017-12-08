@@ -32,6 +32,7 @@
 			//UPDATE login SET auth_code = 'xxx' WHERE login_name = 'sfc' AND state = 'state123';
 			$csql = $conn->prepare("UPDATE nerdDB.login SET auth_code = ?, expires = ?, access_token = ?, refresh_token = ? WHERE login_name = ? AND state = ?");
 			$res = $csql -> execute(array($auth_code, $expires, $json_data->access_token, $json_data->refresh_token, $_SESSION["login_name"], $state));
+			$_SESSION["auth_status"] = true;
 		}
 	}
 
