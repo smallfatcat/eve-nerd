@@ -16,15 +16,17 @@
   
 <?php
   echo  '<script>g_user_name = "' . $_SESSION["login_name"] . '";'
-          .'g_access_token = "' . $_SESSION["access_token"] . '";'
-          .'g_expires = "' . $_SESSION["expires"] . '";'
-          .'g_character_id = "' . $_SESSION["character_id"] . '";'
+          .'g_access_token = "'   . $_SESSION["access_token"] . '";'
+          .'g_expires = "'        . $_SESSION["expires"] . '";'
+          .'g_character_id = "'   . $_SESSION["character_id"] . '";'
           .'</script>';
 ?>
   <script src='util.js'></script>
+  <script src='bigVars.js'></script>
   <script src='location.js'></script>
 </head>
 <body>
 <p class="s4">Location test</p>
+<p class="s2" id="text_location"></p>
 
 </html>

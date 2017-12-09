@@ -41,5 +41,5 @@
 	));
 	$_SESSION['access_token'] = $auth_data->access_token;
 	$_SESSION['expires'] = $expires;
-	echo $_SESSION['access_token'];
+	echo '{ "access_token" : "'.$_SESSION['access_token'].'", "expires" : "'.$_SESSION['expires'].'"}';
 ?>
