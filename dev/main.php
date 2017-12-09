@@ -43,13 +43,16 @@
 
 	// if logged in
 	else{
-		echo 'Logged in as: ' . $_SESSION["login_name"];
+		echo 'User: ' . $_SESSION["login_name"];
 		if(isset($_SESSION["character_name"])){
-			echo ' character name: ' . $_SESSION["character_name"];
+			echo '<br>Character: ' . $_SESSION["character_name"];
 			//https://imageserver.eveonline.com/Character/1460129480_32.jpg
-			echo '<img src="https://imageserver.eveonline.com/Character/'.$_SESSION["character_id"].'_32.jpg">';
+			echo '<br><img src="https://imageserver.eveonline.com/Character/'.$_SESSION["character_id"].'_32.jpg">';
 		}
-		echo '<script>g_user_name = "' . $_SESSION["login_name"] . '"</script>';
+		echo 	'<script>g_user_name = "' . $_SESSION["login_name"] . '";'
+					.'g_access_token = "' . $_SESSION["access_token"] . '";'
+					.'g_expires = "' . $_SESSION["expires"] . '";'
+					.'</script>';
 		// logout button
 		echo '<form action="/dev/login.php" method="post">';
 		echo '<input type="hidden" name="logout" value="1">';

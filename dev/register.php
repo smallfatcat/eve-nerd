@@ -31,7 +31,6 @@
 		$login_pass = password_hash($_POST["login_pass1"],PASSWORD_DEFAULT);
 		$state = random_int(0, 60000);
 		if(!$username_taken){
-			//$csql = $conn->prepare("INSERT INTO nerdDB.login (login_name, login_pass) VALUES ('sfc','letmein')");
 			$csql = $conn->prepare("INSERT INTO nerdDB.login (login_name, login_pass, state) VALUES (?, ?, ?)");
 			$res = $csql -> execute(array($login_name, $login_pass, $state));
 			$_SESSION["login_name"] = $login_name;

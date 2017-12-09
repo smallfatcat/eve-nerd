@@ -14,7 +14,7 @@
 		}
 
 		//$csql = $conn->prepare("SELECT login_name FROM login WHERE login_name = '". $login_name . "' AND login_pass = '". $login_pass ."'");
-		$csql = $conn->prepare("SELECT login_name, state, character_name, character_id, login_pass, access_token FROM login WHERE login_name = ?");
+		$csql = $conn->prepare("SELECT login_name, state, character_name, character_id, login_pass, access_token, expires FROM login WHERE login_name = ?");
 		$res = $csql -> execute(array($login_name));
 
 		// if rowcount greater than 0 then username matched
@@ -34,6 +34,8 @@
 				$_SESSION["logged_in"] = true;
 				$_SESSION["character_name"] = $row['character_name'];
 				$_SESSION["character_id"] = $row['character_id'];
+				$_SESSION["access_token"] = $row['access_token'];
+				$_SESSION["expires"] = $row['expires'];
 			}
 			else{
 				$_SESSION["logged_in"] = false;
