@@ -1,40 +1,5 @@
 <?php
 	session_start();
-	include 'db_auth.php';
-
-	// handle login form
-	if(isset($_POST["login"])){
-		$login_name = $_POST["login_name"];
-		$login_pass = $_POST["login_pass"];
-
-		try {
-		  $conn = new PDO( "mysql:" . "host=".$servername.";" . "dbname=".$dbname, $username, $password);
-		} catch (PDOException $e) {
-		  die('Connection failed: ' . $e->getMessage());
-		}
-
-		//$csql = $conn->prepare("SELECT login_name FROM login WHERE login_name = '". $login_name . "' AND login_pass = '". $login_pass ."'");
-		$csql = $conn->prepare("SELECT login_name, state FROM login WHERE login_name = ? AND login_pass = ?");
-		$res = $csql -> execute(array($login_name, $login_pass));
-
-		// if rowcount greater than 0 then username and password matched
-		if($csql->rowCount() > 0){
-			$row = $csql->fetch(PDO::FETCH_ASSOC);
-			$_SESSION["login_name"] = $row['login_name'];
-			$_SESSION["state"] = $row['state'];
-			$_SESSION["logged_in"] = true;
-		}
-		// empty result means no match found
-		else{
-			$_SESSION["logged_in"] = false;
-			echo 'Username/Password not found';
-		}
-	}
-	// handle logout
-	if(isset($_POST["logout"])){
-		$_SESSION["logged_in"] = false;
-	}
-
 ?>
 
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
@@ -64,7 +29,7 @@
 	// if logged out
 	if(!$_SESSION["logged_in"]){
 		// login form
-		echo '<form action="/dev/main.php" method="post">';
+		echo '<form action="/dev/login.php" method="post">';
 		echo '<label for="login_name">Username:</label>';
 		echo '<input type="text" name="login_name">';
 		echo '<label for="login_pass">Password:</label>';
@@ -72,15 +37,21 @@
 		echo '<input type="hidden" name="login" value="1">';
 		echo '<input type="submit" value="Login">';
 		echo '</form>';
+		echo '<a href="register.php">Register</a>';
 		//print_r($_SESSION);
 	}
 
 	// if logged in
 	else{
 		echo 'Logged in as: ' . $_SESSION["login_name"];
+		if(isset($_SESSION["character_name"])){
+			echo ' character name: ' . $_SESSION["character_name"];
+			//https://imageserver.eveonline.com/Character/1460129480_32.jpg
+			echo '<img src="https://imageserver.eveonline.com/Character/'.$_SESSION["character_id"].'_32.jpg">';
+		}
 		echo '<script>g_user_name = "' . $_SESSION["login_name"] . '"</script>';
 		// logout button
-		echo '<form action="/dev/main.php" method="post">';
+		echo '<form action="/dev/login.php" method="post">';
 		echo '<input type="hidden" name="logout" value="1">';
 		echo '<input type="submit" value="Logout">';
 		echo '</form>';
