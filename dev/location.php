@@ -13,17 +13,19 @@
 
   <script src='libs/jquery-3.2.1.js'></script>
   <script src='libs/jquery-ui.js'></script>
+  <script src='util.js'></script>
+  <script src='bigVars.js'></script>
   
 <?php
   echo  '<script>g_user_name = "' . $_SESSION["login_name"] . '";'
           .'g_access_token = "'   . $_SESSION["access_token"] . '";'
           .'g_expires = "'        . $_SESSION["expires"] . '";'
           .'g_character_id = "'   . $_SESSION["character_id"] . '";'
-          .'</script>';
+          .'var myVar = setInterval(function(){ getLocation() }, 10000);'
+          .'</script><script src='location.js'></script>';
 ?>
-  <script src='util.js'></script>
-  <script src='bigVars.js'></script>
-  <script src='location.js'></script>
+  
+
 </head>
 <body>
 <p class="s4">Location test</p>

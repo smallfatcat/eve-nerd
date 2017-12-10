@@ -66,6 +66,8 @@
 			$_SESSION["auth_status"] = true;
 			$_SESSION["character_name"] = $verify_data->CharacterName;
 			$_SESSION["character_id"] = $verify_data->CharacterID;
+			$_SESSION["access_token"] = $auth_data->access_token;
+			$_SESSION["expires"] = $expires;
 		}
 	}
 
