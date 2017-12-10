@@ -26,12 +26,17 @@
 <?php
 	if(isset($_SESSION["logged_in"])){
 		if($_SESSION["logged_in"]&&$_SESSION["auth_status"]){
-			echo 	'<script>g_user_name = "' . $_SESSION["login_name"] . '";'
+			echo 	'<script>'
+				.'g_user_name = "' . $_SESSION["login_name"] . '";'
 				.'g_access_token = "' . $_SESSION["access_token"] . '";'
 				.'g_expires = "' . $_SESSION["expires"] . '";'
 				.'g_character_id = "'   . $_SESSION["character_id"] . '";'
+				.'</script>'
+				.'<script src="location.js"></script>'
+				.'<script>'
+				.'getLocation();'
 				.'var myVar = setInterval(function(){ getLocation() }, 10000);'
-				.'</script><script src="location.js"></script>';
+				.'</script>';
 		}
 	}
 ?>
@@ -60,7 +65,7 @@
 			echo '<input type="submit" value="Logout">';
 			echo '</form>';
 			if(!$_SESSION["auth_status"]){
-				$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fwww.eve-nerd.com%2Fdev%2Fauth.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=esi-location.read_location.v1%20esi-location.read_ship_type.v1%20esi-location.read_online.v1&state='.$_SESSION["state"];
+				$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Fwww.eve-nerd.com%2Fdev%2Fauth.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=esi-location.read_location.v1%20esi-location.read_ship_type.v1%20esi-location.read_online.v1%20esi-fleets.write_fleet.v1%20esi-fleets.read_fleet.v1&state='.$_SESSION["state"];
 				echo '<a href="'.$sso_link.'"><img src="./EVE_SSO_Login_Buttons_Small_Black.png"></a>';
 				//https://www.eve-nerd.com/dev/main.php?code=F4UPlvIKQ3sczvesm9nOAOCVJqwPWxbV5pG-5o6P-b_sChG__GqHY6tI4L9GZXcM0&state=uniquestate123
 			}

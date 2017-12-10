@@ -52,7 +52,7 @@
 			  die('Connection failed: ' . $e->getMessage());
 			}
 			//UPDATE login SET auth_code = 'xxx' WHERE login_name = 'sfc' AND state = 'state123';
-			$csql = $conn->prepare("UPDATE nerdDB.login SET auth_code = ?, expires = ?, access_token = ?, refresh_token = ? , character_id = ?, character_name = ?, character_owner_hash = ?, token_type = ? WHERE login_name = ? AND state = ?");
+			$csql = $conn->prepare("UPDATE nerdDB.login SET auth_code = ?, expires = ?, access_token = ?, refresh_token = ? , character_id = ?, character_name = ?, character_owner_hash = ?, token_type = ?, scopes = ? WHERE login_name = ? AND state = ?");
 			$res = $csql -> execute(array($auth_code, 
 																		$expires,
 																		$auth_data->access_token,
@@ -61,6 +61,7 @@
 																		$verify_data->CharacterName,
 																		$verify_data->CharacterOwnerHash,
 																		$verify_data->TokenType,
+																		$verify_data->Scopes,
 																		$_SESSION["login_name"],
 																		$state));
 			$_SESSION["auth_status"] = true;
