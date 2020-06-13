@@ -1,7 +1,9 @@
 <?php
+
+	// usage http://eve-nerd.com/dev/db_test_inserts/zkill_history.php?y=2020&m=6&d=11
   $servername = "localhost";
-	$username = "enAdmin";
-	$password = "c64amigacat232323";
+	$username = "evenerd";
+	$password = "evenerd";
 	$dbname = "nerdDB";
 
 	// Create connection

@@ -29,10 +29,29 @@ try {
             $row = $queue->fetch(PDO::FETCH_ASSOC);
             $counter ++;
             //$hashes[$i] = $row["hash"];
-            $char_list =  $row["character_id"].($i==0?'':',').$char_list; 
+            //if($row["character_id"]!=0){
+                    $char_list =  $row["character_id"].($i==0?'':',').$char_list;
+            //}
         }
         echo $char_list;
-        $curl_arr[0] = curl_init('https://esi.tech.ccp.is/latest/characters/names/?character_ids=' . $char_list . '&datasource=tranquility');
+        $characterTest = '['.$char_list.']';
+
+        echo '------------';
+        echo $characterTest;
+        // https://esi.evetech.net/latest/characters/
+        // https://esi.tech.ccp.is/latest/characters/names/?character_ids=90098579,90096827,90096643&datasource=tranquility
+        // curl -X POST "https://esi.evetech.net/latest/universe/names/?datasource=tranquility" -H "accept: application/json" -H "Content-Type: application/json" -d "[ 90159655,90159583,90159041]"
+        $curl_arr[0] = curl_init();
+        $headers = [
+            'accept: application/json',
+            'Content-Type: application/json'
+        ];
+        
+        //curl_setopt($curl_arr[0], CURLOPT_HTTPHEADER, $headers);
+        
+        curl_setopt($curl_arr[0], CURLOPT_URL,"https://esi.evetech.net/latest/universe/names/?datasource=tranquility");
+        curl_setopt($curl_arr[0], CURLOPT_POST, 1);
+        curl_setopt($curl_arr[0], CURLOPT_POSTFIELDS, $characterTest);
         curl_setopt($curl_arr[0], CURLOPT_RETURNTRANSFER, true);
         curl_multi_add_handle($master, $curl_arr[0]);
 
@@ -45,13 +64,14 @@ try {
         {
             
             $rawdata = curl_multi_getcontent  ( $curl_arr[0]  );
-            //var_dump($rawdata);
+            var_dump($rawdata);
             $chardata = json_decode($rawdata, false);
-            //var_dump($chardata);
+            //echo $chardata;
+            var_dump($chardata);
             foreach ($chardata as $character) {
             	$res = $csql -> execute(array( 
-                $character->character_id,
-                $character->character_name
+                $character->id,
+                $character->name
             	));
             	if(!$res){
                 die(sprintf("Error: %s\n", $csql->errorInfo()));

@@ -22,7 +22,7 @@
           .'g_expires = "'        . $_SESSION["expires"] . '";'
           .'g_character_id = "'   . $_SESSION["character_id"] . '";'
           .'var myVar = setInterval(function(){ getLocation() }, 10000);'
-          .'</script><script src='location.js'></script>';
+          ."</script><script src='location.js'></script>";
 ?>
   
 

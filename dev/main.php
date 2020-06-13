@@ -73,7 +73,7 @@
 	}
 
 	// if logged out
-	else{
+	if(!$_SESSION["logged_in"] || !isset($_SESSION["logged_in"])){
 			// login form
 			echo '<form action="/dev/login.php" method="post">';
 			echo '<label for="login_name">Username:</label>';

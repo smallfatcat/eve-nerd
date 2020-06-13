@@ -1,7 +1,7 @@
 <?php
 
     include 'db_auth.php';
-    $batchSize = 1000;
+    $batchSize = 10000;
 
 try {
     $conn = new PDO( "mysql:" . "host=".$servername.";" . "dbname=".$dbname, $username, $password);
@@ -30,7 +30,7 @@ try {
             $row = $queue->fetch(PDO::FETCH_ASSOC);
             $counter ++;
             $hashes[$i] = $row["hash"];
-            $curl_arr[$i] = curl_init('https://esi.tech.ccp.is/latest/killmails/' . $row["killID"] . '/' . $row["hash"] . '/?datasource=tranquility');
+            $curl_arr[$i] = curl_init('https://esi.evetech.net/v1/killmails/' . $row["killID"] . '/' . $row["hash"] . '/?datasource=tranquility');
             curl_setopt($curl_arr[$i], CURLOPT_RETURNTRANSFER, true);
             curl_multi_add_handle($master, $curl_arr[$i]);
         }

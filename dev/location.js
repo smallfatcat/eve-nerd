@@ -8,7 +8,7 @@ var now = Date.now();
 function get_all_data(){
   esi_get_data("https://esi.tech.ccp.is/latest/characters/" + g_character_id + "/location/?datasource=tranquility", g_access_token, esi_get_location_handler);
   esi_get_data("https://esi.tech.ccp.is/latest/characters/" + g_character_id + "/ship/?datasource=tranquility", g_access_token, esi_get_ship_handler);
-  esi_get_data("https://esi.tech.ccp.is/v1/characters/" + g_character_id + "/fleet/?datasource=tranquility", g_access_token, esi_get_fleet_handler);
+  //esi_get_data("https://esi.tech.ccp.is/v1/characters/" + g_character_id + "/fleet/?datasource=tranquility", g_access_token, esi_get_fleet_handler);
 }
 
 function getLocation(){
@@ -51,6 +51,25 @@ function esi_get_data(url, access_token, cFunction){
   httpReq.send();
 }
 
+function esi_post_data(url, access_token, cFunction, fleet_id, character_id, role, wing_id, squad_id){
+  var httpReq = getXMLHttpRequest();
+  httpReq.onreadystatechange = function (){
+    if (this.readyState == 4 && this.status == 200) {
+      cFunction(this);
+    }
+  };
+  httpReq.open("POST", url, true);
+  httpReq.setRequestHeader('accept', 'application/json');
+  httpReq.setRequestHeader('authorization', 'Bearer ' + access_token);
+  var invite_data = '{"character_id": '+character_id+', '+'"role": "'+role+'", '+'"wing_id": '+wing_id+', '+'"squad_id": '+squad_id+'}';
+  httpReq.send(invite_data);
+}
+
+function test_fleet_invite(fleet_id, character_id, role, wing_id, squad_id){
+  var url = "https://esi.tech.ccp.is/v1/fleets/" + fleet_id + "/members/?datasource=tranquility";
+  esi_post_data(url, g_access_token, esi_get_fleet_invite_handler, fleet_id, character_id, role, wing_id, squad_id)
+}
+
 function esi_get_location_handler(httpReq){
   var location_data = JSON.parse(httpReq.responseText);
   g_location_data = location_data;
@@ -81,6 +100,11 @@ function esi_get_fleet_member_handler(httpReq){
 function esi_get_fleet_wings_handler(httpReq){
   var fleet_wings_data = JSON.parse(httpReq.responseText);
   console.log(fleet_wings_data);
+}
+
+function esi_get_fleet_invite_handler(httpReq){
+  var fleet_invite_data = JSON.parse(httpReq.responseText);
+  console.log(fleet_invite_data);
 }
 
 function esi_get_ship_handler(httpReq){
