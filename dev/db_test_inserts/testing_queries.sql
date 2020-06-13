@@ -1,4 +1,68 @@
-/* summary by day*/
+/* Alliance kills of citadels in wormholes*/
+SELECT A.alliance_id,
+	COUNT(A.alliance_id) as Total
+FROM(
+    SELECT DISTINCT CONCAT(attackers.alliance_id, killmails.killmail_id) as sig,
+	attackers.alliance_id,
+	killmails.killmail_id
+	FROM killmails
+	INNER JOIN
+	attackers
+	ON attackers.killmail_id = killmails.killmail_id
+    INNER JOIN
+    system_info
+    ON system_info.id = killmails.solar_system_id
+	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+	AND system_info.security IN ('C1','C2','C3','C4','C5','C6')
+) AS A
+GROUP BY alliance_id
+ORDER BY Total DESC
+
+/* Corp kills of citadels in wormholes*/
+
+SELECT A.corporation_id,
+	COUNT(A.corporation_id) as Total
+FROM(
+    SELECT DISTINCT CONCAT(attackers.corporation_id, killmails.killmail_id) as sig,
+	attackers.corporation_id,
+	killmails.killmail_id
+	FROM killmails
+	INNER JOIN
+	attackers
+	ON attackers.killmail_id = killmails.killmail_id
+    INNER JOIN
+    system_info
+    ON system_info.id = killmails.solar_system_id
+	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+	AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+	AND system_info.security IN ('C1','C2','C3','C4','C5','C6')
+) AS A
+GROUP BY corporation_id
+ORDER BY Total DESC
+
+/* summary by day and class*/
+
+SELECT DATE(killmails.killmail_time) as Day,
+ COUNT( DATE(killmails.killmail_time)) as Total,
+ SUM(case when system_info.security = 'H' then 1 else 0 end) AS H,
+ SUM(case when system_info.security = 'L' then 1 else 0 end) AS L,
+ SUM(case when system_info.security = '0.0' then 1 else 0 end) AS NS,
+ SUM(case when system_info.security = 'C1' then 1 else 0 end) AS C1,
+ SUM(case when system_info.security = 'C2' then 1 else 0 end) AS C2,
+ SUM(case when system_info.security = 'C3' then 1 else 0 end) AS C3,
+ SUM(case when system_info.security = 'C4' then 1 else 0 end) AS C4,
+ SUM(case when system_info.security = 'C5' then 1 else 0 end) AS C5,
+ SUM(case when system_info.security = 'C6' then 1 else 0 end) AS C6
+FROM killmails
+INNER JOIN
+system_info
+ON system_info.id = killmails.solar_system_id
+WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00' 
+GROUP BY  DATE(killmails.killmail_time)
+
+/* summary by day and type*/
 
 SELECT DATE(killmails.killmail_time) as Day,
  COUNT( DATE(killmails.killmail_time)) as Total,
@@ -18,7 +82,7 @@ WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834
 AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00' 
 GROUP BY  DATE(killmails.killmail_time)
 
-/* summary by sec*/
+/* summary by sec and type*/
 SELECT system_info.security as Sec,
  COUNT(system_info.security) as Total,
  SUM(case when killmails.ship_type_id = 35835 then 1 else 0 end) AS Athanor,
