@@ -171,7 +171,7 @@ function get_data_character_name(character_name){
 	    return search_data;
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/searchKills_character_name.php?character_name="+character_name, true);
+	xmlhttp.open("GET", "http://eve-nerd.com/dev/searchKills_character_name.php?character_name="+character_name, true);
 	xmlhttp.send();
 }
 
@@ -190,7 +190,7 @@ function get_data_solar_system(solar_system_id){
 	    return search_data;
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/searchKills_solar_system.php?solar_system_id="+solar_system_id, true);
+	xmlhttp.open("GET", "http://eve-nerd.com/dev/searchKills_solar_system.php?solar_system_id="+solar_system_id, true);
 	xmlhttp.send();
 }
 
@@ -209,7 +209,7 @@ function get_data_ship_type(ship_type_id){
 	    return search_data;
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/searchKills_ship_type.php?ship_type_id="+ship_type_id, true);
+	xmlhttp.open("GET", "http://eve-nerd.com/dev/searchKills_ship_type.php?ship_type_id="+ship_type_id, true);
 	xmlhttp.send();
 }
 
@@ -228,7 +228,7 @@ function get_data_kill(killmail_id){
 	    return search_data;
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/getKillDetails.php?killmail_id="+killmail_id, true);
+	xmlhttp.open("GET", "http://eve-nerd.com/dev/getKillDetails.php?killmail_id="+killmail_id, true);
 	xmlhttp.send();
 }
 
@@ -248,7 +248,7 @@ function get_items(killmail_id){
 	    return search_data;
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/getItems.php?killmail_id="+killmail_id, true);
+	xmlhttp.open("GET", "http://eve-nerd.com/dev/getItems.php?killmail_id="+killmail_id, true);
 	xmlhttp.send();
 }
 

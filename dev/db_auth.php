@@ -1,7 +1,7 @@
 <?php
   $servername = "localhost";
-	$username = "DB_username";
-	$password = "DB_password";
+	$username = "evenerd";
+	$password = "evenerd";
 	$dbname = "nerdDB";
 
 	$GLOBALS['servername'] = $servername;

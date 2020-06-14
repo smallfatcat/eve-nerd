@@ -6,9 +6,9 @@ var now = Date.now();
 //var myVar = setInterval(function(){ getLocation() }, 10000);
 
 function get_all_data(){
-  esi_get_data("https://esi.tech.ccp.is/latest/characters/" + g_character_id + "/location/?datasource=tranquility", g_access_token, esi_get_location_handler);
-  esi_get_data("https://esi.tech.ccp.is/latest/characters/" + g_character_id + "/ship/?datasource=tranquility", g_access_token, esi_get_ship_handler);
-  //esi_get_data("https://esi.tech.ccp.is/v1/characters/" + g_character_id + "/fleet/?datasource=tranquility", g_access_token, esi_get_fleet_handler);
+  esi_get_data("https://esi.evetech.net/latest/characters/" + g_character_id + "/location/?datasource=tranquility", g_access_token, esi_get_location_handler);
+  esi_get_data("https://esi.evetech.net/latest/characters/" + g_character_id + "/ship/?datasource=tranquility", g_access_token, esi_get_ship_handler);
+  //esi_get_data("https://esi.evetech.net/v1/characters/" + g_character_id + "/fleet/?datasource=tranquility", g_access_token, esi_get_fleet_handler);
 }
 
 function getLocation(){
@@ -34,7 +34,7 @@ function refresh_access_token(character_id){
       get_all_data();
     }
   };
-  xmlhttp.open("GET", "https://www.eve-nerd.com/dev/refresh_token.php", true);
+  xmlhttp.open("GET", "http://eve-nerd.com/dev/refresh_token.php", true);
   xmlhttp.send();
 }
 
@@ -66,7 +66,7 @@ function esi_post_data(url, access_token, cFunction, fleet_id, character_id, rol
 }
 
 function test_fleet_invite(fleet_id, character_id, role, wing_id, squad_id){
-  var url = "https://esi.tech.ccp.is/v1/fleets/" + fleet_id + "/members/?datasource=tranquility";
+  var url = "https://esi.evetech.net/v1/fleets/" + fleet_id + "/members/?datasource=tranquility";
   esi_post_data(url, g_access_token, esi_get_fleet_invite_handler, fleet_id, character_id, role, wing_id, squad_id)
 }
 
@@ -81,9 +81,9 @@ function esi_get_fleet_handler(httpReq){
   var fleet_data = JSON.parse(httpReq.responseText);
   console.log(fleet_data);
   if(fleet_data.fleet_id != undefined){
-    esi_get_data("https://esi.tech.ccp.is/v1/fleets/" + fleet_data.fleet_id + "/?datasource=tranquility", g_access_token, esi_get_fleet_info_handler);
-    esi_get_data("https://esi.tech.ccp.is/v1/fleets/" + fleet_data.fleet_id + "/members/?datasource=tranquility", g_access_token, esi_get_fleet_member_handler);
-    esi_get_data("https://esi.tech.ccp.is/v1/fleets/" + fleet_data.fleet_id + "/wings/?datasource=tranquility", g_access_token, esi_get_fleet_wings_handler);
+    esi_get_data("https://esi.evetech.net/v1/fleets/" + fleet_data.fleet_id + "/?datasource=tranquility", g_access_token, esi_get_fleet_info_handler);
+    esi_get_data("https://esi.evetech.net/v1/fleets/" + fleet_data.fleet_id + "/members/?datasource=tranquility", g_access_token, esi_get_fleet_member_handler);
+    esi_get_data("https://esi.evetech.net/v1/fleets/" + fleet_data.fleet_id + "/wings/?datasource=tranquility", g_access_token, esi_get_fleet_wings_handler);
   }
 }
 
