@@ -44,6 +44,10 @@ function esi_get_data(url, access_token, cFunction){
     if (this.readyState == 4 && this.status == 200) {
       cFunction(this);
     }
+    if(this.readyState == 4 && this.status == 403) {
+      console.log('refresh required');
+      refresh_access_token(g_character_id);
+    }
   };
   httpReq.open("GET", url, true);
   httpReq.setRequestHeader('accept', 'application/json');
