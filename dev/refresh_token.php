@@ -27,7 +27,7 @@
 	$auth_data = json_decode($auth_page);
 
 	// Calculate expire time
-	$t = time();
+	$t = time()-3600;
 	$t +=  (int)$auth_data->expires_in;
 	$expires = date("Y-m-d H:i:s",$t);
 

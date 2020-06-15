@@ -1,5 +1,7 @@
 var g_location_data;
 var g_ship_data;
+var g_corp_asset_data;
+var g_corporation_id = 98015080;
 var expires = Date.createFromMysql(g_expires).valueOf();
 var now = Date.now();
 
@@ -9,6 +11,10 @@ function get_all_data(){
   esi_get_data("https://esi.evetech.net/latest/characters/" + g_character_id + "/location/?datasource=tranquility", g_access_token, esi_get_location_handler);
   esi_get_data("https://esi.evetech.net/latest/characters/" + g_character_id + "/ship/?datasource=tranquility", g_access_token, esi_get_ship_handler);
   //esi_get_data("https://esi.evetech.net/v1/characters/" + g_character_id + "/fleet/?datasource=tranquility", g_access_token, esi_get_fleet_handler);
+}
+
+function get_corp_asset_data(){
+  esi_get_data("https://esi.evetech.net/latest/corporations/" + g_corporation_id + "/assets/?datasource=tranquility&page=1", g_access_token, esi_get_ship_handler);
 }
 
 function getLocation(){
@@ -79,6 +85,12 @@ function esi_get_location_handler(httpReq){
   g_location_data = location_data;
   document.getElementById("text_location").innerHTML = IDtoName(g_location_data.solar_system_id, solarSystems);
   console.log(g_location_data);
+}
+
+function esi_get_corp_assets_handler(httpReq){
+  var corp_asset_data = JSON.parse(httpReq.responseText);
+  g_corp_asset_data = corp_asset_data;
+  console.log(g_corp_asset_data);
 }
 
 function esi_get_fleet_handler(httpReq){
