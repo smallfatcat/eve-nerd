@@ -6,6 +6,7 @@
 // Licence: MIT
 
 var region_id = 10000010;
+var region_name = "Delve";
 
 var g_map_data = {};
 var g_raw_map_data = [];
@@ -208,7 +209,7 @@ if (window.XMLHttpRequest) {
 	    save_map_data(map_data);
 		}
 	};
-	xmlhttp.open("GET", "https://www.eve-nerd.com/dev/getMapData.php?region_id="+region_id, true);
+	xmlhttp.open("GET", "http://eve-nerd.com/dev/getMapData.php?region_name="+region_name, true);
 	xmlhttp.send();
 }
 

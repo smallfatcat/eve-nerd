@@ -24,8 +24,8 @@
   <script src='main.js'></script>
 
 <?php
-	if(isset($_SESSION["logged_in"])){
-		if($_SESSION["logged_in"]&&$_SESSION["auth_status"]){
+	if(isset($_SESSION["logged_in"])  /*&& isset($_SESSION["auth_status"])*/){
+		if(isset($_SESSION["auth_status"]) && $_SESSION["auth_status"] && $_SESSION["logged_in"]){
 			echo 	'<script>'
 				.'g_user_name = "' . $_SESSION["login_name"] . '";'
 				.'g_access_token = "' . $_SESSION["access_token"] . '";'
@@ -64,7 +64,7 @@
 			echo '<input type="hidden" name="logout" value="1">';
 			echo '<input type="submit" value="Logout">';
 			echo '</form>';
-			if(!$_SESSION["auth_status"]){
+			if(!isset($_SESSION["auth_status"]) || !$_SESSION["auth_status"]){
 				$sso_link = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=http%3A%2F%2Feve-nerd.com%2Fdev%2Fauth.php&client_id=bde392cd64294a879685ad2d9f45a08a&scope=esi-location.read_location.v1%20esi-location.read_ship_type.v1%20esi-location.read_online.v1%20esi-fleets.write_fleet.v1%20esi-fleets.read_fleet.v1%20esi-assets.read_corporation_assets.v1&state='.$_SESSION["state"];
 				echo '<a href="'.$sso_link.'"><img src="./EVE_SSO_Login_Buttons_Small_Black.png"></a>';
 				//https://www.eve-nerd.com/dev/main.php?code=F4UPlvIKQ3sczvesm9nOAOCVJqwPWxbV5pG-5o6P-b_sChG__GqHY6tI4L9GZXcM0&state=uniquestate123
@@ -73,18 +73,18 @@
 	}
 
 	// if logged out
-	if(!$_SESSION["logged_in"] || !isset($_SESSION["logged_in"])){
-			// login form
-			echo '<form action="/dev/login.php" method="post">';
-			echo '<label for="login_name">Username:</label>';
-			echo '<input type="text" name="login_name">';
-			echo '<label for="login_pass">Password:</label>';
-			echo '<input type="password" name="login_pass">';
-			echo '<input type="hidden" name="login" value="1">';
-			echo '<input type="submit" value="Login">';
-			echo '</form>';
-			echo '<a href="register.php">Register</a>';
-	}
+		if(!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]){
+				// login form
+				echo '<form action="/dev/login.php" method="post">';
+				echo '<label for="login_name">Username:</label>';
+				echo '<input type="text" name="login_name">';
+				echo '<label for="login_pass">Password:</label>';
+				echo '<input type="password" name="login_pass">';
+				echo '<input type="hidden" name="login" value="1">';
+				echo '<input type="submit" value="Login">';
+				echo '</form>';
+				echo '<a href="register.php">Register</a>';
+		}
 ?>
 </div>
 <p class="s4">eve-nerd.com</p>
