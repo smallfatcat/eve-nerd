@@ -23,7 +23,10 @@
   <script src='bigVars.js'></script>
   <script src='main.js'></script>
 
+ 
 <?php
+	// If logged in and authed on ESI
+
 	if(isset($_SESSION["logged_in"])  /*&& isset($_SESSION["auth_status"])*/){
 		if(isset($_SESSION["auth_status"]) && $_SESSION["auth_status"] && $_SESSION["logged_in"]){
 			echo 	'<script>'
@@ -49,6 +52,7 @@
 <div id="login_form" class="ui-widget">
 <?php
 	// if logged in
+	
 	if(isset($_SESSION["logged_in"])){
 		if($_SESSION["logged_in"]){
 			echo 'User: ' . $_SESSION["login_name"];
