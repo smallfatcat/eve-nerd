@@ -22,31 +22,27 @@
   <script src='util.js'></script>
   <script src='bigVars.js'></script>
   <script src='main.js'></script>
-
  
-<?php
-	// If logged in and authed on ESI
+	<?php
+		// If logged in and authed on ESI
 
-	if(isset($_SESSION["logged_in"])  /*&& isset($_SESSION["auth_status"])*/){
-		if(isset($_SESSION["auth_status"]) && $_SESSION["auth_status"] && $_SESSION["logged_in"]){
-			echo 	'<script>'
-				.'g_user_name = "' . $_SESSION["login_name"] . '";'
-				.'g_access_token = "' . $_SESSION["access_token"] . '";'
-				.'g_expires = "' . $_SESSION["expires"] . '";'
-				.'g_character_id = "'   . $_SESSION["character_id"] . '";'
-				.'</script>'
-				.'<script src="location.js"></script>'
-				.'<script>'
-				.'getLocation();'
-				.'var myVar = setInterval(function(){ getLocation() }, 10000);'
-				.'</script>';
+		if(isset($_SESSION["logged_in"])  /*&& isset($_SESSION["auth_status"])*/){
+			if(isset($_SESSION["auth_status"]) && $_SESSION["auth_status"] && $_SESSION["logged_in"]){
+				echo 	'<script>'
+					.'g_user_name = "' . $_SESSION["login_name"] . '";'
+					.'g_access_token = "' . $_SESSION["access_token"] . '";'
+					.'g_expires = "' . $_SESSION["expires"] . '";'
+					.'g_character_id = "'   . $_SESSION["character_id"] . '";'
+					.'</script>'
+					.'<script src="location.js"></script>'
+					.'<script>'
+					.'getLocation();'
+					.'var myVar = setInterval(function(){ getLocation() }, 10000);'
+					.'</script>';
+			}
 		}
-	}
-?>
+	?>
 
-  
-  
-  
 </head>
 <body>
 <div id="login_form" class="ui-widget">

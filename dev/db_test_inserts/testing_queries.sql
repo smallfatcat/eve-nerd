@@ -1,32 +1,22 @@
-/* Alliance kills of citadels in wormholes*/
-SELECT A.alliance_id,
-	COUNT(A.alliance_id) as Total
-FROM(
-    SELECT DISTINCT CONCAT(attackers.alliance_id, killmails.killmail_id) as sig,
-	attackers.alliance_id,
-	killmails.killmail_id
-	FROM killmails
-	INNER JOIN
-	attackers
-	ON attackers.killmail_id = killmails.killmail_id
-    INNER JOIN
-    system_info
-    ON system_info.id = killmails.solar_system_id
-	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
-    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
-	AND system_info.security IN ('C1','C2','C3','C4','C5','C6')
-) AS A
-GROUP BY alliance_id
-ORDER BY Total DESC
-
-/* Corp kills of citadels in wormholes*/
-
+/* corporation kills of citadels BY CLASS*/
 SELECT A.corporation_id,
+	A.corporation_name,
+    SUM(case when A.security = 'H' then 1 else 0 end) AS H,
+    SUM(case when A.security = 'L' then 1 else 0 end) AS L,
+    SUM(case when A.security = '0.0' then 1 else 0 end) AS NS,
+    SUM(case when A.security = 'C1' then 1 else 0 end) AS C1,
+    SUM(case when A.security = 'C2' then 1 else 0 end) AS C2,
+    SUM(case when A.security = 'C3' then 1 else 0 end) AS C3,
+    SUM(case when A.security = 'C4' then 1 else 0 end) AS C4,
+    SUM(case when A.security = 'C5' then 1 else 0 end) AS C5,
+    SUM(case when A.security = 'C6' then 1 else 0 end) AS C6,
 	COUNT(A.corporation_id) as Total
 FROM(
     SELECT DISTINCT CONCAT(attackers.corporation_id, killmails.killmail_id) as sig,
 	attackers.corporation_id,
-	killmails.killmail_id
+	killmails.killmail_id,
+    corporations.corporation_name,
+    system_info.security
 	FROM killmails
 	INNER JOIN
 	attackers
@@ -34,11 +24,135 @@ FROM(
     INNER JOIN
     system_info
     ON system_info.id = killmails.solar_system_id
+    INNER JOIN
+    corporations
+    ON corporations.corporation_id = attackers.corporation_id
 	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
-	AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+	/*AND system_info.security IN ('C1','C2','C3','C4','C5','C6')*/
+) AS A
+GROUP BY A.corporation_id
+ORDER BY Total DESC
+
+/* Alliance kills of citadels BY CLASS in wormholes*/
+SELECT A.alliance_id,
+	A.alliance_name,
+    SUM(case when A.security = 'C1' then 1 else 0 end) AS C1,
+    SUM(case when A.security = 'C2' then 1 else 0 end) AS C2,
+    SUM(case when A.security = 'C3' then 1 else 0 end) AS C3,
+    SUM(case when A.security = 'C4' then 1 else 0 end) AS C4,
+    SUM(case when A.security = 'C5' then 1 else 0 end) AS C5,
+    SUM(case when A.security = 'C6' then 1 else 0 end) AS C6,
+	COUNT(A.alliance_id) as Total
+FROM(
+    SELECT DISTINCT CONCAT(attackers.alliance_id, killmails.killmail_id) as sig,
+	attackers.alliance_id,
+	killmails.killmail_id,
+    alliances.alliance_name,
+    system_info.security
+	FROM killmails
+	INNER JOIN
+	attackers
+	ON attackers.killmail_id = killmails.killmail_id
+    INNER JOIN
+    system_info
+    ON system_info.id = killmails.solar_system_id
+    INNER JOIN
+    alliances
+    ON alliances.alliance_id = attackers.alliance_id
+	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
 	AND system_info.security IN ('C1','C2','C3','C4','C5','C6')
 ) AS A
-GROUP BY corporation_id
+GROUP BY A.alliance_id
+ORDER BY Total DESC
+
+/* Alliance kills of citadels BY CLASS*/
+SELECT A.alliance_id,
+	A.alliance_name,
+    SUM(case when A.security = 'H' then 1 else 0 end) AS H,
+    SUM(case when A.security = 'L' then 1 else 0 end) AS L,
+    SUM(case when A.security = '0.0' then 1 else 0 end) AS NS,
+    SUM(case when A.security = 'C1' then 1 else 0 end) AS C1,
+    SUM(case when A.security = 'C2' then 1 else 0 end) AS C2,
+    SUM(case when A.security = 'C3' then 1 else 0 end) AS C3,
+    SUM(case when A.security = 'C4' then 1 else 0 end) AS C4,
+    SUM(case when A.security = 'C5' then 1 else 0 end) AS C5,
+    SUM(case when A.security = 'C6' then 1 else 0 end) AS C6,
+	COUNT(A.alliance_id) as Total
+FROM(
+    SELECT DISTINCT CONCAT(attackers.alliance_id, killmails.killmail_id) as sig,
+	attackers.alliance_id,
+	killmails.killmail_id,
+    alliances.alliance_name,
+    system_info.security
+	FROM killmails
+	INNER JOIN
+	attackers
+	ON attackers.killmail_id = killmails.killmail_id
+    INNER JOIN
+    system_info
+    ON system_info.id = killmails.solar_system_id
+    INNER JOIN
+    alliances
+    ON alliances.alliance_id = attackers.alliance_id
+	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+	/*AND system_info.security IN ('C1','C2','C3','C4','C5','C6')*/
+) AS A
+GROUP BY A.alliance_id
+ORDER BY Total DESC
+
+/* Alliance kills of citadels in wormholes*/
+SELECT A.alliance_id,
+	A.alliance_name,
+	COUNT(A.alliance_id) as Total
+FROM(
+    SELECT DISTINCT CONCAT(attackers.alliance_id, killmails.killmail_id) as sig,
+	attackers.alliance_id,
+	killmails.killmail_id,
+    alliances.alliance_name
+	FROM killmails
+	INNER JOIN
+	attackers
+	ON attackers.killmail_id = killmails.killmail_id
+    INNER JOIN
+    system_info
+    ON system_info.id = killmails.solar_system_id
+    INNER JOIN
+    alliances
+    ON alliances.alliance_id = attackers.alliance_id
+	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+	AND system_info.security IN ('C1','C2','C3','C4','C5','C6')
+) AS A
+GROUP BY A.alliance_id
+ORDER BY Total DESC
+
+/* Corporation kills of citadels in wormholes*/
+SELECT A.corporation_id,
+	A.corporation_name,
+	COUNT(A.corporation_id) as Total
+FROM(
+    SELECT DISTINCT CONCAT(attackers.corporation_id, killmails.killmail_id) as sig,
+	attackers.corporation_id,
+	killmails.killmail_id,
+    corporations.corporation_name
+	FROM killmails
+	INNER JOIN
+	attackers
+	ON attackers.killmail_id = killmails.killmail_id
+    INNER JOIN
+    system_info
+    ON system_info.id = killmails.solar_system_id
+    INNER JOIN
+    corporations
+    ON corporations.corporation_id = attackers.corporation_id
+	WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834)
+    AND killmails.killmail_time BETWEEN '2020-05-18 11:00:00' AND '2020-06-12 11:00:00'
+	AND system_info.security IN ('C1','C2','C3','C4','C5','C6')
+) AS A
+GROUP BY A.corporation_id
 ORDER BY Total DESC
 
 /* summary by day and class*/
@@ -190,3 +304,27 @@ WHERE killmails.ship_type_id IN (35835,35836,35825,35827,35826,35832,35833,35834
 AND system_info.security IN ('H')
 GROUP BY killmail_id
 ORDER BY NumberOfAttackers DESC
+
+SELECT nerdDB.corp_assets.quantity,
+nerdDB.corp_assets.location_id,
+nerdDB.corp_assets.location_flag,
+eve_sde.invtypes.typeName,
+eve_sde.invtypes.basePrice,
+eve_sde.invtypes.volume
+FROM nerdDB.corp_assets
+INNER JOIN eve_sde.invtypes
+ON eve_sde.invtypes.typeID = nerdDB.corp_assets.type_id
+
+SELECT nerdDB.corp_assets.quantity,
+nerdDB.corp_assets.location_id,
+nerdDB.corp_assets.location_flag,
+nerdDB.corp_assets.location_type,
+nerdDB.corp_assets.item_id,
+eve_sde.invtypes.typeName,
+eve_sde.invtypes.basePrice,
+eve_sde.invtypes.volume
+FROM nerdDB.corp_assets
+INNER JOIN eve_sde.invtypes
+ON eve_sde.invtypes.typeID = nerdDB.corp_assets.type_id 
+WHERE nerdDB.corp_assets.is_blueprint_copy IS NULL  
+ORDER BY `corp_assets`.`location_id`  ASC

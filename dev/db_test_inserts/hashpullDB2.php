@@ -8,7 +8,11 @@ try {
 } catch (PDOException $e) {
     die('Connection failed: ' . $e->getMessage());
 }
-
+    $sql_total = "SELECT COUNT(killID) AS total FROM zkill_history WHERE killID NOT IN (SELECT killmail_id FROM killmails)";
+    $total_res = $conn->query($sql_total);
+    $total_left_row = $total_res->fetch(PDO::FETCH_ASSOC);
+    $total_left = $total_left_row["total"];
+    
     $sql = "SELECT * FROM zkill_history WHERE killID NOT IN (SELECT killmail_id FROM killmails) ORDER BY killID DESC LIMIT ".$batchSize;
     $queue = $conn->query($sql);
 
@@ -16,7 +20,7 @@ try {
     $time_start = microtime(true);
 
     $master = curl_multi_init();
-    echo "### " . $queue->rowCount() . " records in Queue. ###<br> ";
+    echo "### " . $queue->rowCount() . " records in Queue. Total Left: " . $total_left;
 
     $ksql = $conn->prepare("INSERT INTO killmails (killmail_id, killmail_hash, killmail_time, character_id, damage_taken, ship_type_id, corporation_id, alliance_id, solar_system_id, position, faction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
     $asql = $conn->prepare("INSERT INTO attackers (character_id, corporation_id, alliance_id, faction_id, security_status, damage_done, final_blow, ship_type_id, weapon_type_id, killmail_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -42,7 +46,7 @@ try {
 
         for($i = 0; $i < count($curl_arr); $i++)
         {
-            
+            $json_data = curl_multi_getcontent  ( $curl_arr[$i]  );
             $killdata = json_decode(curl_multi_getcontent  ( $curl_arr[$i]  ), false);
 
             $res = $ksql -> execute(array( 
@@ -60,6 +64,7 @@ try {
                 ));
             
             if(!$res){
+                echo $json_data;
                 die(sprintf("Error: %s\n", $ksql->errorInfo()));
             }
             echo "K";
@@ -79,6 +84,7 @@ try {
                     $killdata->killmail_id
                     ));
             if(!$res){
+                echo $json_data;
                 die(sprintf("Error: %s\n", $asql->errorInfo()));
             }
                     echo "A";
@@ -95,6 +101,7 @@ try {
                     $killdata->killmail_id
                     ));
             if(!$res){
+                echo $json_data;
                 die(sprintf("Error: %s\n", $isql->errorInfo()));
             }
                     echo "I";
