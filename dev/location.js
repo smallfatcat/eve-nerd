@@ -28,6 +28,18 @@ function getLocation(){
   }
 }
 
+function store_location_data(solar_system_id, ship_type_id){
+  var xmlhttp = getXMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log('Location data stored in DB');
+      console.log(this.responseText);
+    }
+  };
+  xmlhttp.open("GET", "http://eve-nerd.com/dev/store_location_data.php?ship_type_id="+ship_type_id+"&solar_system_id="+solar_system_id, true);
+  xmlhttp.send();
+}
+
 function refresh_access_token(character_id){
   var xmlhttp = getXMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
@@ -82,9 +94,39 @@ function test_fleet_invite(fleet_id, character_id, role, wing_id, squad_id){
 
 function esi_get_location_handler(httpReq){
   var location_data = JSON.parse(httpReq.responseText);
+  if(g_location_data != undefined){
+    if(location_data.solar_system_id != g_location_data.solar_system_id){
+      store_location_change(location_data);
+    }
+  }
   g_location_data = location_data;
   document.getElementById("text_location").innerHTML = IDtoName(g_location_data.solar_system_id, solarSystems);
   console.log(g_location_data);
+}
+
+function esi_get_ship_handler(httpReq){
+  var ship_data = JSON.parse(httpReq.responseText);
+  if(g_ship_data != undefined){
+    if(ship_data.ship_type_id != g_ship_data.ship_type_id){
+      store_ship_change(ship_data);
+    }
+  }
+  g_ship_data = ship_data;
+  var ship_img =  '<img src="https://imageserver.eveonline.com/Render/'+ g_ship_data.ship_type_id + '_32.png">';
+  document.getElementById("text_ship").innerHTML =  ship_img + IDtoName(g_ship_data.ship_type_id, ship_types);
+  console.log(g_ship_data);
+}
+
+function store_location_change(location_data){
+  var solar_system_id = location_data.solar_system_id;
+  console.log('Location change detected: ' + solar_system_id);
+  store_location_data(location_data.solar_system_id, g_ship_data.ship_type_id);
+}
+
+function store_ship_change(ship_data){
+  var ship_type_id = ship_data.ship_type_id;
+  console.log('Ship change detected: ' + ship_type_id);
+  store_location_data(g_location_data.solar_system_id, ship_data.ship_type_id);
 }
 
 function esi_get_corp_assets_handler(httpReq){
@@ -121,14 +163,6 @@ function esi_get_fleet_wings_handler(httpReq){
 function esi_get_fleet_invite_handler(httpReq){
   var fleet_invite_data = JSON.parse(httpReq.responseText);
   console.log(fleet_invite_data);
-}
-
-function esi_get_ship_handler(httpReq){
-  var ship_data = JSON.parse(httpReq.responseText);
-  g_ship_data = ship_data;
-  var ship_img =  '<img src="https://imageserver.eveonline.com/Render/'+ g_ship_data.ship_type_id + '_32.png">';
-  document.getElementById("text_ship").innerHTML =  ship_img + IDtoName(g_ship_data.ship_type_id, ship_types);
-  console.log(g_ship_data);
 }
 
 function getXMLHttpRequest(){

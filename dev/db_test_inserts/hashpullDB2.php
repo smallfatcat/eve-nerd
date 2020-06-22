@@ -2,6 +2,7 @@
 
     include 'db_auth.php';
     $batchSize = 10000;
+    $error_counter = 0;
 
 try {
     $conn = new PDO( "mysql:" . "host=".$servername.";" . "dbname=".$dbname, $username, $password);
@@ -13,7 +14,7 @@ try {
     $total_left_row = $total_res->fetch(PDO::FETCH_ASSOC);
     $total_left = $total_left_row["total"];
     
-    $sql = "SELECT * FROM zkill_history WHERE killID NOT IN (SELECT killmail_id FROM killmails) ORDER BY killID DESC LIMIT ".$batchSize;
+    $sql = "SELECT zkill_history.killID, zkill_history.hash FROM zkill_history LEFT JOIN killmails ON zkill_history.killID = killmails.killmail_id WHERE killmails.killmail_id IS NULL ORDER BY killID DESC LIMIT ".$batchSize;
     $queue = $conn->query($sql);
 
     $counter = 0;
@@ -43,10 +44,15 @@ try {
             curl_multi_exec($master,$running);
         } while($running > 0);
 
-
+        
         for($i = 0; $i < count($curl_arr); $i++)
         {
             $json_data = curl_multi_getcontent  ( $curl_arr[$i]  );
+            if (strpos($json_data, '502 Bad Gateway') !== false) {
+                echo 'E';
+                $error_counter = $error_counter + 1;
+                continue;
+            }
             $killdata = json_decode(curl_multi_getcontent  ( $curl_arr[$i]  ), false);
 
             $res = $ksql -> execute(array( 
@@ -118,5 +124,6 @@ try {
     echo "<br><br><br><b>FINISHED</b>";
     echo 'Time: ' . $time . '<br>';
     echo 'Memory: ' . memory_get_peak_usage(). '<br>';
+    echo 'Errors: ' . $error_counter. '<br>';
  
 ?>

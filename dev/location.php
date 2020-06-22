@@ -21,7 +21,7 @@
           .'g_access_token = "'   . $_SESSION["access_token"] . '";'
           .'g_expires = "'        . $_SESSION["expires"] . '";'
           .'g_character_id = "'   . $_SESSION["character_id"] . '";'
-          .'var myVar = setInterval(function(){ getLocation() }, 10000);'
+          .'var myVar = setInterval(function(){ getLocation() }, 5000);'
           ."</script><script src='location.js'></script>";
 ?>
   
